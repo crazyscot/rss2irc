@@ -1,0 +1,8 @@
+# FIXME:  TODO: Reinstate the proper URL-encoding in the bot.
+#
+#bbc-frontpage;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml
+bbc-uk;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/uk/rss.xml
+bbc-world;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml
+bbc-biz;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/business/rss.xml
+bbc-science;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/sci/tech/rss.xml
+bbc-tech;0;http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/technology/rss.xml
