@@ -9,11 +9,11 @@
 use strict;
 use Net::IRC;
 use XML::RSS;
-use LWP::Simple;
+use LWP::Simple; # "get"
 use Carp;
 #use Encode;
 
-my $rss = new XML::RSS(encoding=>"iso-8859-1");
+my $rss = new XML::RSS(encoding=>"UTF-8");
 my $irc = new Net::IRC;
 
 my $TEST = 0;
@@ -100,17 +100,17 @@ sub handle_waiting {
     my $secs = $conn->{newtime} - $conn->{oldtime};
     $conn->{waittime} += $secs;
     if ($conn->{waittime} > $checktime) {
-	$conn->{status} = 'check';
-	$conn->{waittime} = 0;
+        $conn->{status} = 'check';
+        $conn->{waittime} = 0;
     } else {
-	$conn->{status} = "wait";
+        $conn->{status} = "wait";
     }
 
     # Don't flood IRC, we'll get kicked off
     $conn->{readtime} += $secs;
     if ($conn->{readtime} > $throttle) {
-	read_news($conn);
-	$conn->{readtime} = 0;
+        read_news($conn);
+        $conn->{readtime} = 0;
     }
 }
 
@@ -123,10 +123,10 @@ sub cheat_encode($) {
     s/[^ -~]/?/g;
     s/\?\s+//g;
     if (0) {
-	# HEXDUMP TEMP:
-	print "TEnc: ";
-	while (/(.)/g) { printf "%02x", ord($1) }
-	print "\n";
+        # HEXDUMP TEMP:
+        print "TEnc: ";
+        while (/(.)/g) { printf "%02x", ord($1) }
+        print "\n";
     }
     return $_;
 }
@@ -135,40 +135,40 @@ sub get_news {
     my $conn = shift;
     my ($content,$site,$title,$tmp);
     foreach my $item (@sites) {
-	if( $content = get($item->[2]) ) {
-	    my $ref = eval {
-	    	local $SIG{'__DIE__'}; # perlfunc: don't trigger the die trap
-		$rss->parse($content);
-	    };
-	    if($@) {
-		print "Error parsing feed $site: $@\n";
-	    } else {
-		# Report the top N items.
-		my @newcache = ();
-		for (my $i=0; $i<$perfeed; $i++) {
-		    if(!check_cache($item->[0], $rss->{'items'}->[$i]->{'link'}) or $TEST==1) {
-		        # XXX Cheesy encoding in the absence of Encode.pm
-			#my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
-			my $title = cheat_encode($rss->{items}->[$i]->{title});
+        if( $content = get($item->[2]) ) {
+            my $ref = eval {
+                local $SIG{'__DIE__'}; # perlfunc: don't trigger the die trap
+                $rss->parse($content);
+            };
+            if($@) {
+                print "Error parsing feed ".$item->[0]." (".$item->[2]."): $@\n";
+            } else {
+                # Report the top N items.
+                my @newcache = ();
+                for (my $i=0; $i<$perfeed; $i++) {
+                    if(!check_cache($item->[0], $rss->{'items'}->[$i]->{'link'}) or $TEST==1) {
+                        # XXX Cheesy encoding in the absence of Encode.pm
+                        #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
+                        my $title = cheat_encode($rss->{items}->[$i]->{title});
 
-			#$site  = ''.$item->[1].$item->[0].': ';
-			$site  = ''.$item->[0].': ';
-			#my $tmplink = $rss->{'items'}->[$i]->{'link'};
-			#$tmplink =~ s/^\s+//; $tmplink =~ s/\s+$//;
-			#$tmplink =~ s,^(http://news.bbc.co.uk/)go/rss/-/(.*),$1$2,;
-			#my $link = Encode::encode("iso-8859-1", $tmplink);
-			#my $link = cheat_encode($tmplink);
-			my $link = cheat_encode(url_canon($rss->{'items'}->[$i]->{'link'}));
-			print "Reporting: S=$site T=$title L=$link\n";
-			push_story($site.$title." -> ".$link);
-		    } else { print "Cached: ".url_canon($rss->{'items'}->[$i]->{'link'})."\n"; }
-		    push @newcache, url_canon($rss->{'items'}->[$i]->{'link'});
-		}
-		update_cache($item->[0], @newcache);
-	    }
-	} else {
-	    $conn->privmsg($conn->{channel}, "Error fetching page for: ".$item->[0]) unless $TEST==1;
-	}
+                        #$site  = ''.$item->[1].$item->[0].': ';
+                        $site  = ''.$item->[0].': ';
+                        #my $tmplink = $rss->{'items'}->[$i]->{'link'};
+                        #$tmplink =~ s/^\s+//; $tmplink =~ s/\s+$//;
+                        #$tmplink =~ s,^(http://news.bbc.co.uk/)go/rss/-/(.*),$1$2,;
+                        #my $link = Encode::encode("iso-8859-1", $tmplink);
+                        #my $link = cheat_encode($tmplink);
+                        my $link = cheat_encode(url_canon($rss->{'items'}->[$i]->{'link'}));
+                        print "Reporting: S=$site T=$title L=$link\n";
+                        push_story($site.$title." -> ".$link);
+                    } else { print "Cached: ".url_canon($rss->{'items'}->[$i]->{'link'})."\n"; }
+                    push @newcache, url_canon($rss->{'items'}->[$i]->{'link'});
+                }
+                update_cache($item->[0], @newcache);
+            }
+        } else {
+            $conn->privmsg($conn->{channel}, "Error fetching page for: ".$item->[0]) unless $TEST==1;
+        }
     }
 }
 
@@ -220,7 +220,7 @@ sub check_status {
     if ($hupflag) {
     	read_sites();
     	$conn->{status} = "check";
-	$hupflag = 0;
+        $hupflag = 0;
     }
     if($conn->{status} =~ /^check$/ or $TEST==1) {
         get_news($conn);
