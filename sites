@@ -5,3 +5,9 @@ bbc-world;0;http://feeds.bbci.co.uk/news/world/rss.xml
 bbc-biz;0;http://feeds.bbci.co.uk/news/business/rss.xml
 bbc-sci;0;http://feeds.bbci.co.uk/news/science_and_environment/rss.xml
 bbc-tech;0;http://feeds.bbci.co.uk/news/technology/rss.xml
+# Weather feeds never change their URLs, so the current code won't report them more than once. TODO, someday...
+#Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
+#Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
+#Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
+#Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
+

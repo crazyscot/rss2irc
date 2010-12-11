@@ -123,6 +123,8 @@ sub cheat_encode($) {
     $_=shift;
     s/\xA3/GBP/g; # Pound signs choke some clients
     s/\xA4/EUR/g;
+    s/\xB0//g; # Degree
+    s/\n//g; # grr crlf
     s/[^ -~]/?/g;
     s/\?\s+//g;
     if (0) {
@@ -158,9 +160,13 @@ sub get_news {
                         # XXX Cheesy encoding in the absence of Encode.pm
                         #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
                         my $title = cheat_encode($rss->{items}->[$i]->{title});
+                        next unless $title ne "";
 
-                        #$site  = ''.$item->[1].$item->[0].': ';
-                        $site  = ''.$item->[0].': ';
+                        if ($TEST) {
+                            $site  = ''.$item->[0].': ';
+                        } else {
+                            $site  = ''.$item->[1].$item->[0].': ';
+                        }
                         #my $tmplink = $rss->{'items'}->[$i]->{'link'};
                         #$tmplink =~ s/^\s+//; $tmplink =~ s/\s+$//;
                         #$tmplink =~ s,^(http://news.bbc.co.uk/)go/rss/-/(.*),$1$2,;
@@ -220,7 +226,7 @@ sub update_cache {
     # so @_ is now the new cache. OVERWRITES what's already there!
     my $fh;
     my $cachefile = $cachedir."/".$name;
-    open($fh, ">", $cachefile) or die ("Cant open cachefile: $!");
+    open($fh, ">", $cachefile) or die ("Can't open cachefile: $!");
     print $fh $_.$/ for (@_);
     close($fh);
 }
@@ -290,5 +296,6 @@ $SIG{__DIE__} = \&deathexcept;
 while (1) {
     check_status($conn);
     $irc->do_one_loop();
+    sleep $checktime if $TEST;
 }
 

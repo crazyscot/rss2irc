@@ -1,4 +1,5 @@
 Add better global config (botconf.pm?)
 Add msg handling (possibly allowing config to be rewritten?)
 
-Change feed list?  http://news.bbc.co.uk/1/hi/help/rss/default.stm so far.
+Tweak handling to cope with BBC weather feeds, which don't change their
+links (so would fall foul of the current cacheing logic).
