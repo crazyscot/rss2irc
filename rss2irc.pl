@@ -18,6 +18,9 @@ my $irc = new Net::IRC;
 
 my $TEST = 0;
 
+my $t = shift @ARGV;
+$TEST=1 if $t eq '--test';
+
 print "Connecting...\n";
 
 my $conn = $irc->newconn(
