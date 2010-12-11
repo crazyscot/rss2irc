@@ -176,7 +176,7 @@ sub get_news {
             }
         } else {
             my $m = "Error fetching page for ".$item->[0].": ".$response->status_line;
-            print "$m\n  URL for this was: ".$item->[2].'\n';
+            print "$m\n  URL for this was: ".$item->[2]."\n";
             $conn->privmsg($conn->{channel}, $m) unless $TEST==1;
         }
     }
