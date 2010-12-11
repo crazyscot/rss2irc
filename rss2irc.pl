@@ -9,7 +9,7 @@
 use strict;
 use Net::IRC;
 use XML::RSS;
-use LWP::Simple; # "get"
+use LWP::UserAgent;
 use Carp;
 #use Encode;
 
@@ -134,8 +134,13 @@ sub cheat_encode($) {
 sub get_news {
     my $conn = shift;
     my ($content,$site,$title,$tmp);
+    my $ua = LWP::UserAgent->new;
+    $ua->timeout(10);
+    $ua->env_proxy;
     foreach my $item (@sites) {
-        if( $content = get($item->[2]) ) {
+        my $response = $ua->get($item->[2]);
+        if( $response->is_success ) {
+            $content = $response->content;
             my $ref = eval {
                 local $SIG{'__DIE__'}; # perlfunc: don't trigger the die trap
                 $rss->parse($content);
@@ -167,7 +172,9 @@ sub get_news {
                 update_cache($item->[0], @newcache);
             }
         } else {
-            $conn->privmsg($conn->{channel}, "Error fetching page for: ".$item->[0]) unless $TEST==1;
+            my $m = "Error fetching page for ".$item->[0].": ".$response->status_line;
+            print "$m\n  URL for this was: ".$item->[2].'\n';
+            $conn->privmsg($conn->{channel}, $m) unless $TEST==1;
         }
     }
 }
