@@ -156,7 +156,8 @@ sub get_news {
                 # Report the top N items.
                 my @newcache = ();
                 for (my $i=0; $i<$perfeed; $i++) {
-                    if(!check_cache($item->[0], $rss->{'items'}->[$i]->{'link'}) or $TEST==1) {
+                    my $link = url_canon($rss->{'items'}->[$i]->{'guid'});
+                    if(!check_cache($item->[0], $link) or $TEST==1) {
                         # XXX Cheesy encoding in the absence of Encode.pm
                         #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
                         my $title = cheat_encode($rss->{items}->[$i]->{title});
@@ -167,16 +168,16 @@ sub get_news {
                         } else {
                             $site  = ''.$item->[1].$item->[0].': ';
                         }
-                        #my $tmplink = $rss->{'items'}->[$i]->{'link'};
+                        #my $tmplink = $rss->{'items'}->[$i]->{'guid'};
                         #$tmplink =~ s/^\s+//; $tmplink =~ s/\s+$//;
                         #$tmplink =~ s,^(http://news.bbc.co.uk/)go/rss/-/(.*),$1$2,;
                         #my $link = Encode::encode("iso-8859-1", $tmplink);
                         #my $link = cheat_encode($tmplink);
-                        my $link = cheat_encode(url_canon($rss->{'items'}->[$i]->{'link'}));
+                        $link = cheat_encode($link);
                         print "Reporting: S=$site T=$title L=$link\n";
                         push_story($site.$title." -> ".$link);
-                    } else { print "Cached: ".url_canon($rss->{'items'}->[$i]->{'link'})."\n"; }
-                    push @newcache, url_canon($rss->{'items'}->[$i]->{'link'});
+                    } else { print "Cached: $link\n"; }
+                    push @newcache, $link;
                 }
                 update_cache($item->[0], @newcache);
             }
