@@ -39,7 +39,7 @@ my $conn = $irc->newconn(
 ) unless $TEST==1;
 
 my $checktime = 600; # seconds
-my $perfeed = 3; # number of items to report per feed
+my $perfeed = 4; # number of items to report per feed
 my $throttle = 3; # seconds between reports
 
 $conn->{status} = "wait"; # "wait" or "check" states
