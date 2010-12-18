@@ -1,0 +1,22 @@
+# SYNTAX:
+#   channel;feedshortname;colour;url
+#   NB that channel must have no leading '#' or it will be mistaken
+#   for a comment!
+#
+# FIXME:  TODO: Reinstate the proper URL-encoding in the bot.
+#
+beeb;bbc-uk;0;http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk
+beeb;bbc-world;0;http://feeds.bbci.co.uk/news/world/rss.xml
+beeb;bbc-biz;0;http://feeds.bbci.co.uk/news/business/rss.xml
+beeb;bbc-sci;0;http://feeds.bbci.co.uk/news/science_and_environment/rss.xml
+beeb;bbc-tech;0;http://feeds.bbci.co.uk/news/technology/rss.xml
+#
+# Now that we report by guid, rather than by link, the BBC weather forecasts can work without a logic facelift:
+weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
+weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
+weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
+weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
+#
+# OTOH the Met Office site, at least the warnings, have serial numbers...
+weather;meto-ee-warnings;2;http://www.metoffice.gov.uk/xml/warnings_rss_ee.xml
+weather;meto-se-warnings;3;http://www.metoffice.gov.uk/xml/warnings_rss_se.xml

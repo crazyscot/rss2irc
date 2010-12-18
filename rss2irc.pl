@@ -18,11 +18,13 @@ my $irc = new Net::IRC;
 
 my $TEST = 0;
 my $SITESFILE = "sites";
+my $CACHEDIR = "cache/";
 
 my $t = shift @ARGV;
 if ($t eq '--test') {
     $TEST=1;
     $SITESFILE = "sites.test";
+    $CACHEDIR = "cache.test/";
 }
 
 print "Connecting...\n";
@@ -43,7 +45,7 @@ my $throttle = 3; # seconds between reports
 $conn->{status} = "wait"; # "wait" or "check" states
 $conn->{oldtime} = time;
 $conn->{newtime} = time;
-my $cachedir = "cache/";
+mkdir $CACHEDIR unless -d $CACHEDIR;
 my @sites;
 my $hupflag = 0;
 
@@ -208,7 +210,7 @@ sub get_news {
 sub read_cache($) {
     my ($name) = shift;
     my ($fh, $cachelink);
-    my $cachefile = $cachedir."/".$name;
+    my $cachefile = $CACHEDIR."/".$name;
     my @rv;
     return undef if( ! -e $cachefile ); 
     open($fh, $cachefile) or die ("Cant open cachefile: $!");
@@ -242,7 +244,7 @@ sub update_cache {
     # args: name, cachelink [,link [,link ...]]
     # so @_ is now the new cache. OVERWRITES what's already there!
     my $fh;
-    my $cachefile = $cachedir."/".$name;
+    my $cachefile = $CACHEDIR."/".$name;
     open($fh, ">", $cachefile) or die ("Can't open cachefile: $!");
     print $fh $_.$/ for (@_);
     close($fh);
