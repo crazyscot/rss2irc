@@ -17,9 +17,13 @@ my $rss = new XML::RSS(encoding=>"UTF-8");
 my $irc = new Net::IRC;
 
 my $TEST = 0;
+my $SITESFILE = "sites";
 
 my $t = shift @ARGV;
-$TEST=1 if $t eq '--test';
+if ($t eq '--test') {
+    $TEST=1;
+    $SITESFILE = "sites.test";
+}
 
 print "Connecting...\n";
 
@@ -36,8 +40,6 @@ my $checktime = 600; # seconds
 my $perfeed = 3; # number of items to report per feed
 my $throttle = 3; # seconds between reports
 
-$conn->{channel} = '#beeb';
-
 $conn->{status} = "wait"; # "wait" or "check" states
 $conn->{oldtime} = time;
 $conn->{newtime} = time;
@@ -48,7 +50,8 @@ my $hupflag = 0;
 read_sites();
 
 # SITES FILE FORMAT:
-# SITENAME;COLOUR;FEEDURL
+# CHANNEL;SITENAME;COLOUR;FEEDURL
+# CHANNEL is what to join (no leading '#' !)
 # "SITENAME" is the site short name for notifications
 # "COLOUR" is an IRC colour code, for clients which support it, from 1-7(?)
 # "FEEDURL" is, duh, the feed's URL.
@@ -58,7 +61,7 @@ read_sites();
 sub read_sites {
     my $ch;
     my @newsites;
-    open($ch, "sites") or die "Cant open configfile: $!";
+    open($ch, $SITESFILE) or die "Cant open configfile: $!";
     while(<$ch>) {
 	next if /^#/;
 	next if /^\s*$/;
@@ -69,9 +72,13 @@ sub read_sites {
 
 #### REPORTING QUEUE
 my @to_report = ();
-sub push_story($) {
-	my $art = shift;
-	push @to_report,$art;
+sub push_story($$) {
+	my ($chan,$line) = @_;
+    my %story = ();
+    $story{channel} = $chan;
+    $story{story} = $line;
+    push @to_report, \%story;
+    #push @to_report,$art;
 }
 
 sub story_next() {
@@ -83,17 +90,26 @@ sub story_next() {
 
 #### IRC HANDLING CODE
 
+my %chans = ();
+
 sub on_connect {
     my $conn = shift;
     print "Connected!\n";
-    $conn->join($conn->{channel}) unless $TEST==1;
+    foreach my $site (@sites) {
+        my $c = '#'.$site->[0];
+        unless ($TEST==1 or exists $chans{$c}) {
+            print "Joining $c\n";
+            $conn->join($c);
+        }
+        $chans{$c} = 1;
+    }
     $conn->{status} = "check"; # Auto-report on start. Or maybe this needs to be in a join handler?
 }
 
 sub read_news {
     my $conn = shift;
     my $story = story_next();
-    $conn->privmsg($conn->{channel},$story) if (defined $story) and $TEST!=1;
+    $conn->privmsg($story->{channel},$story->{story}) if (defined $story) and $TEST!=1;
 }
 
 sub handle_waiting {
@@ -138,12 +154,12 @@ sub cheat_encode($) {
 
 sub get_news {
     my $conn = shift;
-    my ($content,$site,$title,$tmp);
+    my ($content,$tag,$title,$tmp);
     my $ua = LWP::UserAgent->new;
     $ua->timeout(10);
     $ua->env_proxy;
-    foreach my $item (@sites) {
-        my $response = $ua->get($item->[2]);
+    foreach my $site (@sites) {
+        my $response = $ua->get($site->[3]);
         if( $response->is_success ) {
             $content = $response->content;
             my $ref = eval {
@@ -151,22 +167,22 @@ sub get_news {
                 $rss->parse($content);
             };
             if($@) {
-                print "Error parsing feed ".$item->[0]." (".$item->[2]."): $@\n";
+                print "Error parsing feed ".$site->[1]." (".$site->[3]."): $@\n";
             } else {
                 # Report the top N items.
                 my @newcache = ();
                 for (my $i=0; $i<$perfeed; $i++) {
                     my $link = url_canon($rss->{'items'}->[$i]->{'guid'});
-                    if(!check_cache($item->[0], $link) or $TEST==1) {
+                    if(!check_cache($site->[1], $link) or $TEST==1) {
                         # XXX Cheesy encoding in the absence of Encode.pm
                         #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
                         my $title = cheat_encode($rss->{items}->[$i]->{title});
                         next unless $title ne "";
 
                         if ($TEST) {
-                            $site  = ''.$item->[0].': ';
+                            $tag = '('.$site->[0].') '.$site->[1].': ';
                         } else {
-                            $site  = ''.$item->[1].$item->[0].': ';
+                            $tag = ''.$site->[2].$site->[1].': ';
                         }
                         #my $tmplink = $rss->{'items'}->[$i]->{'guid'};
                         #$tmplink =~ s/^\s+//; $tmplink =~ s/\s+$//;
@@ -174,17 +190,17 @@ sub get_news {
                         #my $link = Encode::encode("iso-8859-1", $tmplink);
                         #my $link = cheat_encode($tmplink);
                         $link = cheat_encode($link);
-                        print "Reporting: S=$site T=$title L=$link\n";
-                        push_story($site.$title." -> ".$link);
+                        print "Reporting: S=$tag T=$title L=$link\n";
+                        push_story('#'.$site->[0], $tag.$title." -> ".$link);
                     } else { print "Cached: $link\n"; }
                     push @newcache, $link;
                 }
-                update_cache($item->[0], @newcache);
+                update_cache($site->[1], @newcache);
             }
         } else {
-            my $m = "Error fetching page for ".$item->[0].": ".$response->status_line;
-            print "$m\n  URL for this was: ".$item->[2]."\n";
-            $conn->privmsg($conn->{channel}, $m) unless $TEST==1;
+            my $m = "Error fetching page for ".$site->[1].": ".$response->status_line;
+            print "$m\n  URL for this was: ".$site->[3]."\n";
+            $conn->privmsg('#'.$site->[0], $m) unless $TEST==1;
         }
     }
 }
