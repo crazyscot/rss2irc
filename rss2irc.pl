@@ -157,6 +157,9 @@ sub cheat_encode($) {
 sub get_news {
     my $conn = shift;
     my ($content,$tag,$title,$tmp);
+    my $date = `date`;
+    chomp $date;
+    print "$date: ";
     my $ua = LWP::UserAgent->new;
     $ua->timeout(10);
     $ua->env_proxy;
@@ -169,7 +172,9 @@ sub get_news {
                 $rss->parse($content);
             };
             if($@) {
-                print "Error parsing feed ".$site->[1]." (".$site->[3]."): $@\n";
+                my $m = "Error parsing feed ".$site->[1]." (".$site->[3]."): $@\n";
+                print "$m\n";
+                $conn->privmsg('#'.$site->[0], $m) unless $TEST==1;
             } else {
                 # Report the top N items.
                 my @newcache = ();
@@ -213,7 +218,7 @@ sub read_cache($) {
     my $cachefile = $CACHEDIR."/".$name;
     my @rv;
     return undef if( ! -e $cachefile ); 
-    open($fh, $cachefile) or die ("Cant open cachefile: $!");
+    open($fh, $cachefile) or die ("Can't open cachefile: $!");
     while (<$fh>) {
 	chomp;
 	push @rv, $_;
