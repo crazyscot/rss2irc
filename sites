@@ -15,11 +15,11 @@ beeb;bbc-sci;0;http://feeds.bbci.co.uk/news/science_and_environment/rss.xml
 beeb;bbc-tech;0;http://feeds.bbci.co.uk/news/technology/rss.xml
 #
 # Now that we report by guid, rather than by link, the BBC weather forecasts can work without a logic facelift:
-weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
-weather;Cambridge forecast;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
-weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
-weather;Oxford forecast;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
+#weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
+#weatherfc;Cambridge forecast;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
+#weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
+#weatherfc;Oxford forecast;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
 #
 # OTOH the Met Office site, at least the warnings, have serial numbers...
-weather;Weather Warning EA;4;http://www.metoffice.gov.uk/xml/warnings_rss_ee.xml
-weather;Weather Warning SE;4;http://www.metoffice.gov.uk/xml/warnings_rss_se.xml
+#weatherfc;Weather Warning EA;4;http://www.metoffice.gov.uk/xml/warnings_rss_ee.xml
+#weatherfc;Weather Warning SE;4;http://www.metoffice.gov.uk/xml/warnings_rss_se.xml
