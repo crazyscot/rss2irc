@@ -156,7 +156,6 @@ sub cheat_encode($) {
 
 sub get_news {
     my $conn = shift;
-    my ($content,$tag,$title,$tmp);
     my $date = `date`;
     chomp $date;
     print "$date: ";
@@ -164,17 +163,21 @@ sub get_news {
     $ua->timeout(10);
     $ua->env_proxy;
     foreach my $site (@sites) {
+        my ($content,$tag,$title,$tmp);
         my $response = $ua->get($site->[3]);
         if( $response->is_success ) {
             $content = $response->content;
             my $ref = eval {
-                local $SIG{'__DIE__'}; # perlfunc: don't trigger the die trap
+                # perlfunc: don't trigger the die trap
+                local $SIG{'__DIE__'};
                 $rss->parse($content);
             };
             if($@) {
                 my $m = "Error parsing feed ".$site->[1]." (".$site->[3]."): $@\n";
                 print "$m\n";
                 $conn->privmsg('#'.$site->[0], $m) unless $TEST==1;
+                # 20120705: Does the RSS object get scroggled on a parse fail? Try resetting it.
+                $rss = new XML::RSS(encoding=>"UTF-8");
             } else {
                 # Report the top N items.
                 my @newcache = ();
