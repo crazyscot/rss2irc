@@ -8,18 +8,18 @@
 #
 # FIXME:  TODO: Reinstate the proper URL-encoding in the bot.
 #
-beeb;bbc-uk;0;http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk
-beeb;bbc-world;0;http://feeds.bbci.co.uk/news/world/rss.xml
-beeb;bbc-biz;0;http://feeds.bbci.co.uk/news/business/rss.xml
-beeb;bbc-sci;0;http://feeds.bbci.co.uk/news/science_and_environment/rss.xml
-beeb;bbc-tech;0;http://feeds.bbci.co.uk/news/technology/rss.xml
+beebtest;bbc-uk;0;http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk
+#beebtest;bbc-world;0;http://feeds.bbci.co.uk/news/world/rss.xml
+#beebtest;bbc-biz;0;http://feeds.bbci.co.uk/news/business/rss.xml
+#beebtest;bbc-sci;0;http://feeds.bbci.co.uk/news/science_and_environment/rss.xml
+#beebtest;bbc-tech;0;http://feeds.bbci.co.uk/news/technology/rss.xml
 #
 # Now that we report by guid, rather than by link, the BBC weather forecasts can work without a logic facelift:
-weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
-weather;Cambridge forecast;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
-weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
-weather;Oxford forecast;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
+#weather;Cambridge;2;http://newsrss.bbc.co.uk/weather/forecast/324/ObservationsRSS.xml
+#weather;Cambridge forecast;2;http://newsrss.bbc.co.uk/weather/forecast/324/Next3DaysRSS.xml
+#weather;Oxford;3;http://newsrss.bbc.co.uk/weather/forecast/25/ObservationsRSS.xml
+#weather;Oxford forecast;3;http://newsrss.bbc.co.uk/weather/forecast/25/Next3DaysRSS.xml
 #
 # OTOH the Met Office site, at least the warnings, have serial numbers...
-weather;Weather Warning EA;4;http://www.metoffice.gov.uk/xml/warnings_rss_ee.xml
-weather;Weather Warning SE;4;http://www.metoffice.gov.uk/xml/warnings_rss_se.xml
+#weather;Weather Warning EA;4;http://www.metoffice.gov.uk/xml/warnings_rss_ee.xml
+#weather;Weather Warning SE;4;http://www.metoffice.gov.uk/xml/warnings_rss_se.xml
