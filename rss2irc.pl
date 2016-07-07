@@ -12,6 +12,7 @@ use XML::RSS;
 use LWP::UserAgent;
 use Carp;
 #use Encode;
+use Data::Dumper;
 
 my $rss = new XML::RSS(encoding=>"UTF-8");
 my $irc = new Net::IRC;
@@ -19,6 +20,8 @@ my $irc = new Net::IRC;
 my $TEST = 0;
 my $SITESFILE = "sites";
 my $CACHEDIR = "cache/";
+
+###### For testing, run with --test
 
 my $t = shift @ARGV;
 if ($t eq '--test') {
@@ -182,11 +185,12 @@ sub get_news {
                 # Report the top N items.
                 my @newcache = ();
                 for (my $i=0; $i<$perfeed; $i++) {
-                    my $link = url_canon($rss->{'items'}->[$i]->{'guid'});
+                    my $link = url_canon($rss->{'items'}->[$i]->{'link'});
+                    #print Dumper(\$rss);
                     if(!check_cache($site->[1], $link) or $TEST==1) {
                         # XXX Cheesy encoding in the absence of Encode.pm
                         #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
-                        my $title = cheat_encode($rss->{items}->[$i]->{title});
+                        my $title = cheat_encode($rss->{'items'}->[$i]->{title});
                         next unless $title ne "";
 
                         if ($TEST) {
