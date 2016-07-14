@@ -33,7 +33,7 @@ if ($t eq '--test') {
 print "Connecting...\n";
 
 my $conn = $irc->newconn(
-	Server 		=> 'irc.chiark.greenend.org.uk',
+	Server 		=> 'YOUR-IRC-SERVER-HERE',
 	Port    	=>  6667,
 	Nick		=> 'beeb',
 	Ircname		=> 'perl',
