@@ -1,8 +1,8 @@
 # rss2irc:  Get news from rss sites and post it into a certain irc
 #           channel.
-# WRY found this lying around on the net and hacked it a lot.
-# Copyright status is unclear, but rewriting it to throw away the
-# unclear bits shouldn't be too hard.
+#
+# Written by Ross Younger, but drawing heavily on example code and
+# other similar projects.
 
 
 #!/usr/bin/perl -w
@@ -140,7 +140,7 @@ sub handle_waiting {
 
 sub cheat_encode($) {
     # We cheat horribly in the absence of Encode.pm.
-    # TODO: Reinstate use of Encode. Perhaps tricky on chiark without a perl upgrade?
+    # TODO: Reinstate use of Encode. Depends on local perl install.
     $_=shift;
     s/\xA3/GBP/g; # Pound signs choke some clients
     s/\xA4/EUR/g;
@@ -188,7 +188,7 @@ sub get_news {
                     my $link = url_canon($rss->{'items'}->[$i]->{'link'});
                     #print Dumper(\$rss);
                     if(!check_cache($site->[1], $link) or $TEST==1) {
-                        # XXX Cheesy encoding in the absence of Encode.pm
+                        # Cheesy encoding in the absence of Encode.pm
                         #my $title = Encode::encode("iso-8859-1", $rss->{items}->[$i]->{title});
                         my $title = cheat_encode($rss->{'items'}->[$i]->{title});
                         next unless $title ne "";
