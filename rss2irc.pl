@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w
 # rss2irc:  Get news from rss sites and post it into a certain irc
 #           channel.
 # WRY found this lying around on the net and hacked it a lot.
@@ -5,7 +6,6 @@
 # unclear bits shouldn't be too hard.
 
 
-#!/usr/bin/perl -w
 use strict;
 use Net::IRC;
 use XML::RSS;
