@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl -w -I/home/ryounger/beeb2
 # rss2irc:  Get news from rss sites and post it into a certain irc
 #           channel.
 # WRY found this lying around on the net and hacked it a lot.
