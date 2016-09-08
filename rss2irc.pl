@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w -I/home/ryounger/beeb2
 # rss2irc:  Get news from rss sites and post it into a certain irc
 #           channel.
 #
@@ -5,7 +6,6 @@
 # other similar projects.
 
 
-#!/usr/bin/perl -w
 use strict;
 use Net::IRC;
 use XML::RSS;
