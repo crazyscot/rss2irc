@@ -1,4 +1,6 @@
-#!/usr/bin/perl -w -I/home/ryounger/beeb2
+#!/usr/bin/perl -w
+# You will need to add the perl path in future. Add something like "-I/home/ryounger/rss2irc" to the shebang line.
+
 # rss2irc:  Get news from rss sites and post it into a certain irc
 #           channel.
 #
