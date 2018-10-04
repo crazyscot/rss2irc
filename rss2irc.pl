@@ -24,7 +24,7 @@ my $CACHEDIR = "cache/";
 ###### For testing, run with --test
 
 my $t = shift @ARGV;
-if ($t eq '--test') {
+if ((defined $t) and $t eq '--test') {
     $TEST=1;
     $SITESFILE = "sites.test";
     $CACHEDIR = "cache.test/";
